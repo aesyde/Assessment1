@@ -15,18 +15,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fahrulredho0018.assessment1.R
 import com.fahrulredho0018.assessment1.ui.theme.Assessment1Theme
+import kotlin.math.pow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,6 +74,10 @@ fun ScreenContent(modifier: Modifier = Modifier) {
         stringResource(id = R.string.wanita)
     )
     var gender by remember { mutableStateOf(radioOptions[0]) }
+
+    var bmi by remember { mutableFloatStateOf(0f) }
+    var kategori by remember { mutableIntStateOf(0) }
+
 
     Column (
         modifier = modifier.fillMaxSize()
@@ -129,14 +135,35 @@ fun ScreenContent(modifier: Modifier = Modifier) {
                 )
             }
             Button(
-                onClick = {},
+                onClick = {
+                    bmi = hitungBmi(berat.toFloat(), tinggi.toFloat())
+                    kategori = getkategori(bmi, gender == radioOptions[0])
+                },
                 modifier = Modifier.padding(top = 8.dp),
                 contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
             ) {
                 Text(text = stringResource(R.string.hitung))
             }
+            if (bmi != 0f) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    thickness = 1.dp
+                )
+                Text(
+                    text = stringResource(R.string.bmi_x, bmi),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = stringResource(kategori).uppercase(),
+                    style = MaterialTheme.typography.headlineLarge
+                )
+            }
         }
     }
+}
+
+private fun hitungBmi(berat: Float, tinggi: Float): Float {
+    return berat / (tinggi / 100).pow(2)
 }
 
 @Composable
@@ -151,6 +178,22 @@ fun GenderOption(label: String, isSelected: Boolean, modifier: Modifier) {
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(start = 8.dp)
         )
+    }
+}
+
+private fun getkategori(bmi: Float, isMale: Boolean): Int {
+    return if (isMale) {
+        when {
+            bmi < 20.5 -> R.string.kurus
+            bmi >= 27.0 -> R.string.gemuk
+            else -> R.string.ideal
+        }
+    } else {
+        when {
+            bmi < 18.5 -> R.string.kurus
+            bmi >= 25.0 -> R.string.gemuk
+            else -> R.string.ideal
+        }
     }
 }
 
