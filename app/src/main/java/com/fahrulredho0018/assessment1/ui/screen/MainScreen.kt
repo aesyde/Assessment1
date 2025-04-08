@@ -135,7 +135,7 @@ fun ScreenContent(modifier: Modifier = Modifier){
             value = tinggi,
             onValueChange = { tinggi = it},
             label = { Text(text = stringResource(R.string.tinggi_badan)) },
-            trailingIcon = { IconPicker(tinggiError, "Kg") },
+            trailingIcon = { IconPicker(tinggiError, "Cm") },
             supportingText = { ErrorHint(tinggiError) },
             isError = tinggiError,
             singleLine = true,

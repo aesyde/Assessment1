@@ -1,24 +1,24 @@
 <resources>
     <string name="app_name">Assessment1</string>
-    <string name="bmi_intro">BMI, atau Body Mass Index merupakan cara untuk menentukan apakah berat badanmu ideal atau tidak. Cobalah sekarang!</string>
-    <string name="berat_badan">Berat Badan</string>
-    <string name="tinggi_badan">Tinggi Badan</string>
-    <string name="pria">Pria</string>
-    <string name="wanita">Wanita</string>
-    <string name="hitung">Hitung</string>
+    <string name="bmi_intro">BMI, or Body Mass Index is a way to determine whether your weight is ideal or not. Let\'s go now!</string>
+    <string name="berat_badan">Weight</string>
+    <string name="tinggi_badan">Height</string>
+    <string name="pria">Man</string>
+    <string name="wanita">Woman</string>
+    <string name="hitung">Count</string>
     <string name="bmi_x">BMI: %1$.2f</string>
-    <string name="kurus">Kurus</string>
+    <string name="kurus">Thin</string>
     <string name="ideal">Ideal</string>
-    <string name="gemuk">Gemuk</string>
-    <string name="input_invalid">Tidak boleh kosong</string>
-    <string name="tentang_aplikasi">Tentang Aplikasi</string>
-    <string name="copyright">Hitung BMI merupakan sebuah aplikasi Android untuk menghitung
-    body mass index (BMI) sehinnga seseorang dapat mengetahui apakah berat badannya
-    ideal, gemuk atau kurus. \n\nAplikasi ini dibuat untuk kelas Pemrograman untuk
-    Perangkat Bergerak 1.\n\nCopyright © 2024-2025 Fahrul Redho. \n
-    All rights reserved.</string>
-    <string name="kembali">Kembali</string>
-    <string name="bagikan">Bagikan</string>
-    <string name="bagikan_template">Berat badan: %1$s kg\nTinggi badan: %2$s cm\nJenis kelamin: %3$s\n\nBMI: %4$.2f\n%5$s</string>
-    <string name="gambar">Gambar %1$s</string>
+    <string name="gemuk">Fat</string>
+    <string name="input_invalid">Cannot be empty</string>
+    <string name="tentang_aplikasi">About Application</string>
+    <string name="copyright">Calculate BMI is an Android application to calculate
+        body mass index (BMI) so that someone can find out whether their weight is
+        ideal, fat or thin. \n\nThis application is made for the Programming class for
+        Mobile Devices 1.\n\nCopyright © 2024-2025 Fahrul Redho.
+        \n All rights reserved.</string>
+    <string name="kembali">Return</string>
+    <string name="bagikan">Share</string>
+    <string name="bagikan_template">Weight: %1$s kg\\nHeight: %2$s cm\\nGender: %3$s\\n\\nBMI: %4$.2f\\n%5$s</string>
+    <string name="gambar">Picture %1$s</string>
 </resources>
