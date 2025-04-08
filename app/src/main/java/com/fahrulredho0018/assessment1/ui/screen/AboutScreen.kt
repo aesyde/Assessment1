@@ -5,11 +5,14 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,8 +44,11 @@ import com.fahrulredho0018.assessment1.ui.theme.Assessment1Theme
 fun AboutScreen(navController: NavHostController){
 
         val data = listOf(
-            Logo("", R.drawable.telkom)
+            Logo("Telkom", R.drawable.telkom),
+            Logo("Redo", R.drawable.redo)
         )
+
+        var index by remember { mutableIntStateOf(0) }
 
     Scaffold (
         topBar = {
@@ -62,7 +72,9 @@ fun AboutScreen(navController: NavHostController){
             )
         }
     ) { innerPadding ->
-        AboutContent(data[0],Modifier.padding(innerPadding))
+        AboutContent(data[index],Modifier.padding(innerPadding)){
+            index = if (index == data.size-1) 0 else index + 1
+        }
         Text(
             text = stringResource(R.string.copyright),
             modifier = Modifier.padding(innerPadding).padding(16.dp)
@@ -73,7 +85,8 @@ fun AboutScreen(navController: NavHostController){
 @Composable
 fun AboutContent(
     logo: Logo,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit) {
 
     Column (
         modifier = modifier.fillMaxSize().padding(16.dp),
@@ -86,6 +99,13 @@ fun AboutContent(
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(132.dp)
         )
+        Button(
+            onClick = {onClick()},
+            modifier = Modifier.fillMaxWidth(0.5f).padding(top = 24.dp),
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            Text(text = stringResource(R.string.lanjut))
+        }
     }
 }
 
