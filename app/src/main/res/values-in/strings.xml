@@ -22,4 +22,5 @@
     <string name="input_invalid">Tidak boleh kosong</string>
     <string name="kembali">Kembali</string>
     <string name="gambar">Gambar %1$s</string>
+    <string name="lanjut">lanjut</string>
 </resources>
