@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,9 +18,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -29,21 +33,26 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +62,9 @@ import androidx.navigation.compose.rememberNavController
 import com.fahrulredho0018.assessment1.R
 import com.fahrulredho0018.assessment1.navigation.Screen
 import com.fahrulredho0018.assessment1.ui.theme.Assessment1Theme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.math.pow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,6 +116,9 @@ fun ScreenContent(modifier: Modifier = Modifier){
 
     val context = LocalContext.current
 
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
+    var showModal by remember { mutableStateOf(false) }
+
     Column (
         modifier = modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
@@ -111,11 +126,13 @@ fun ScreenContent(modifier: Modifier = Modifier){
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Text (
             text = stringResource(id = R.string.bmi_intro),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.fillMaxWidth()
         )
+
         OutlinedTextField(
             value = berat,
             onValueChange = { berat = it},
@@ -145,6 +162,38 @@ fun ScreenContent(modifier: Modifier = Modifier){
             ),
             modifier = Modifier.fillMaxWidth()
         )
+
+        OutlinedTextField(
+            value = selectedDate?.let { convertMillisToDate(it) } ?: "",
+            onValueChange = { },
+            label = {
+                Text(
+                    text = stringResource(R.string.tanggal),
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.placeholders)
+                )
+            },
+            trailingIcon = {
+                Icon(Icons.Default.DateRange, contentDescription = "Selected one")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+                .pointerInput(selectedDate) {
+                    awaitEachGesture {  }
+                }
+        )
+        if (showModal){
+            DatePickerModal(
+                onDateSelected = { selectedDate = it },
+                onDismiss =  { showModal = false }
+            )
+        }
+
         Row (
             modifier = Modifier
                 .padding(top = 6.dp)
@@ -165,6 +214,7 @@ fun ScreenContent(modifier: Modifier = Modifier){
                 )
             }
         }
+
         Button(
             onClick = {
                 beratError = (berat == ""|| berat == "0")
@@ -188,11 +238,16 @@ fun ScreenContent(modifier: Modifier = Modifier){
                 text = stringResource(R.string.bmi_x, bmi),
                 style = MaterialTheme.typography.headlineLarge
             )
+            Text(
+                text = stringResource(R.string.tanggal),
+                style = MaterialTheme.typography.headlineLarge
+            )
 
             Text(
                 text = stringResource(kategori).uppercase(),
                 style = MaterialTheme.typography.headlineLarge
             )
+
             Button(
                 onClick = {
                     shareData(
@@ -208,6 +263,11 @@ fun ScreenContent(modifier: Modifier = Modifier){
             }
         }
     }
+}
+
+fun convertMillisToDate(millis: Long): String{
+    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
 }
 
 @Composable
@@ -268,6 +328,34 @@ private fun shareData(context: Context, message: String) {
     }
     if (shareIntent.resolveActivity(context.packageManager) != null){
         context.startActivity(shareIntent)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerModal(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                onDateSelected(datePickerState.selectedDateMillis)
+                onDismiss()
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
     }
 }
 

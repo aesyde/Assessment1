@@ -23,4 +23,6 @@
     <string name="kembali">Kembali</string>
     <string name="gambar">Gambar %1$s</string>
     <string name="lanjut">lanjut</string>
+    <string name="tanggal">Tanggal</string>
+    <string name="placeholders">Placeholders</string>
 </resources>

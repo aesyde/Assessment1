@@ -22,5 +22,6 @@
     <string name="bagikan_template">Weight: %1$s kg\\nHeight: %2$s cm\\nGender: %3$s\\n\\nBMI: %4$.2f\\n%5$s</string>
     <string name="gambar">Picture %1$s</string>
     <string name="lanjut">Next</string>
-
+    <string name="tanggal">Date</string>
+    <string name="placeholders">Placeholders</string>
 </resources>
