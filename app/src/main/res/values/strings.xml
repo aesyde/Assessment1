@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Assessment1</string>
+    <string name="bmi_intro">Water consumption is a way to determine whether our water needs are sufficient or not from our body weight. Let\'s try it now! </string>
+    <string name="tentang_aplikasi">About Application</string>
+    <string name="copyright">Water consumption is an Android application
+    to calculate the water needs in our body from body weight
+    so that someone can find out whether their daily water needs
+    are lacking. \n\nThis application is made for the Assessment 1 for
+    Mobile Devices 1.\n\nCopyright © 2024-2025 Fahrul Redho.
+    \n All rights reserved.</string>
+    <string name="bagikan_template">Weight: %1$s kg\\nWater consumption: %2$s l\\nGender: %3$s\\n\\nKA: %4$.2f\\n%5$s</string>
+    <string name="bagikan">Share</string>
+    <string name="berat_badan">Weight</string>
+    <string name="konsumsi_air">Water consumption</string>
+    <string name="pria">Man</string>
+    <string name="wanita">Woman</string>
+    <string name="hitung">Count</string>
+    <string name="ka_x">KA: %1$.2f</string>
+    <string name="tgl_x">Tanggal: %1$.2f</string>
+    <string name="kekurangan_air">Not enough</string>
+    <string name="kelebihan_air">More</string>
+    <string name="cukup_air">Enough</string>
+    <string name="input_invalid">Cannot be empty</string>
+    <string name="kembali">Return</string>
+    <string name="gambar">Picture %1$s</string>
+    <string name="lanjut">Next</string>
+    <string name="tanggal">Date</string>
+    <string name="placeholders">Placeholders</string>
 </resources>

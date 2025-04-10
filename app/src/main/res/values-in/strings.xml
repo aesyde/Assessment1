@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Assessment1</string>
+    <string name="bmi_intro">Konsumsi air merupakan cara untuk menentukan apakah kebutuhan air kita mencukupi atau tidak dari berat badan kita. Ayo coba sekarang!</string>
+    <string name="tentang_aplikasi">Tentang Aplikasi</string>
+    <string name="copyright">Konsumsi air merupakan sebuah aplikasi Android untuk menghitung
+    kebutuhan air dalam tubuh kita dari berat badan sehinga seseorang dapat mengetahui apakah kebutuhan air
+    hariannya kurang, cukup, atau lebih. \n\nAplikasi ini dibuat untuk assessment 1 untuk
+    Perangkat Bergerak 1.\n\nCopyright © 2024-2025 Fahrul Redho. \n
+    All rights reserved.</string>
+    <string name="bagikan_template">Berat badan: %1$s kg\\nKonsumsi air: %2$s l\\nJenis kelamin: %3$s\\n\\nKA: %4$.2f\\n%5$s</string>
+    <string name="bagikan">Bagikan</string>
+    <string name="berat_badan">Berat Badan</string>
+    <string name="konsumsi_air">Konsumsi Air</string>
+    <string name="pria">Pria</string>
+    <string name="wanita">Wanita</string>
+    <string name="hitung">Hitung</string>
+    <string name="ka_x">KA: %1$.2f</string>
+    <string name="tgl_x">Date: %1$.2f</string>
+    <string name="kekurangan_air">Kurang</string>
+    <string name="kelebihan_air">Lebih</string>
+    <string name="cukup_air">Cukup</string>
+    <string name="input_invalid">Tidak boleh kosong</string>
+    <string name="kembali">Kembali</string>
+    <string name="gambar">Gambar %1$s</string>
+    <string name="lanjut">lanjut</string>
+    <string name="tanggal">Tanggal</string>
+    <string name="placeholders">Placeholders</string>
+</resources>
