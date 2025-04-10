@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,7 +47,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -115,7 +114,9 @@ fun ScreenContent(modifier: Modifier = Modifier){
     val context = LocalContext.current
 
     var selectedDate by rememberSaveable { mutableStateOf<Long?>(null) }
-    var isShowModal by rememberSaveable { mutableStateOf(true) }
+    var isShowModal by rememberSaveable { mutableStateOf(false) }
+    var tanggalError by rememberSaveable { mutableStateOf(false) }
+
 
     Column (
         modifier = modifier.fillMaxSize()
@@ -177,21 +178,32 @@ fun ScreenContent(modifier: Modifier = Modifier){
                 )
             },
             trailingIcon = {
-                Icon(Icons.Default.DateRange, contentDescription = "Selected one")
+                IconButton(onClick = { isShowModal = true }) {
+                    Icon(Icons.Default.DateRange, contentDescription = "Pilih Tanggal")
+                }
+            },
+            isError = tanggalError,
+            supportingText = {
+                if (tanggalError) {
+                    Text(text = "Silakan pilih tanggal terlebih dahulu")
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
-                .pointerInput(selectedDate) {
-                    awaitEachGesture {  }
-                }
+                .clickable { isShowModal = true }
         )
-        if (isShowModal){
+        if (isShowModal) {
             DatePickerModal(
-                onDateSelected = { selectedDate = it },
-                onDismiss =  { isShowModal = false }
+                onDateSelected = { date ->
+                    selectedDate = date
+                    isShowModal = false
+                },
+                onDismiss = { isShowModal = false }
             )
         }
+
+
 
         Row (
             modifier = Modifier
@@ -216,15 +228,13 @@ fun ScreenContent(modifier: Modifier = Modifier){
 
         Button(
             onClick = {
-                beratError = (berat == ""|| berat == "0")
+                beratError = (berat == "" || berat == "0")
                 airError = (air == "" || air == "0")
-                if (beratError || airError) return@Button
+                tanggalError = (selectedDate == null)
 
-                ka = hitung(
-                    berat.toFloat(),
-                    air.toFloat(),
-                    gender == radioOptions[0]
-                )
+                if (beratError || airError || tanggalError) return@Button
+
+                ka = hitung(berat.toFloat(), air.toFloat(), gender == radioOptions[0])
                 kategori = getKategori(ka)
             },
             modifier = Modifier.padding(top = 8.dp),
@@ -232,10 +242,17 @@ fun ScreenContent(modifier: Modifier = Modifier){
         ) {
             Text(text = stringResource(R.string.hitung))
         }
+
+
+
         if (ka != 0f) {
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp),
                 thickness = 1.dp
+            )
+            Text(
+                text = "Tanggal: ${selectedDate?.let { convertMillisToDate(it) }}",
+                style = MaterialTheme.typography.bodyLarge
             )
             Text(
                 text = stringResource(R.string.ka_x, ka),
@@ -250,8 +267,11 @@ fun ScreenContent(modifier: Modifier = Modifier){
                 onClick = {
                     shareData(
                         context = context,
-                        message = context.getString(R.string.bagikan_template,
-                            berat,air,gender,ka,context.getString(kategori).uppercase())
+                        message = context.getString(
+                            R.string.bagikan_template,
+                            berat, air, gender, ka,
+                            context.getString(kategori).uppercase()
+                        )
                     )
                 },
                 modifier = Modifier.padding(top = 8.dp),
