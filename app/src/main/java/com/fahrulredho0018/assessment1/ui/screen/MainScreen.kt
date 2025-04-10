@@ -42,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -65,7 +64,6 @@ import com.fahrulredho0018.assessment1.ui.theme.Assessment1Theme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.pow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,8 +100,8 @@ fun MainScreen(navController: NavHostController){
 fun ScreenContent(modifier: Modifier = Modifier){
     var berat by rememberSaveable { mutableStateOf("") }
     var beratError by rememberSaveable { mutableStateOf(false) }
-    var tinggi by rememberSaveable { mutableStateOf("") }
-    var tinggiError by rememberSaveable { mutableStateOf(false) }
+    var air by rememberSaveable { mutableStateOf("") }
+    var airError by rememberSaveable { mutableStateOf(false) }
 
     val radioOptions = listOf(
         stringResource(id = R.string.pria),
@@ -111,13 +109,13 @@ fun ScreenContent(modifier: Modifier = Modifier){
     )
     var gender by rememberSaveable { mutableStateOf(radioOptions[0]) }
 
-    var bmi by rememberSaveable { mutableFloatStateOf(0f) }
+    var ka by rememberSaveable { mutableFloatStateOf(0f) }
     var kategori by rememberSaveable { mutableIntStateOf(0) }
 
     val context = LocalContext.current
 
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
-    var showModal by remember { mutableStateOf(false) }
+    var selectedDate by rememberSaveable { mutableStateOf<Long?>(null) }
+    var isShowModal by rememberSaveable { mutableStateOf(true) }
 
     Column (
         modifier = modifier.fillMaxSize()
@@ -149,12 +147,12 @@ fun ScreenContent(modifier: Modifier = Modifier){
         )
 
         OutlinedTextField(
-            value = tinggi,
-            onValueChange = { tinggi = it},
-            label = { Text(text = stringResource(R.string.tinggi_badan)) },
-            trailingIcon = { IconPicker(tinggiError, "Cm") },
-            supportingText = { ErrorHint(tinggiError) },
-            isError = tinggiError,
+            value = air,
+            onValueChange = { air = it},
+            label = { Text(text = stringResource(R.string.konsumsi_air)) },
+            trailingIcon = { IconPicker(airError, "L") },
+            supportingText = { ErrorHint(airError) },
+            isError = airError,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
@@ -162,6 +160,7 @@ fun ScreenContent(modifier: Modifier = Modifier){
             ),
             modifier = Modifier.fillMaxWidth()
         )
+
 
         OutlinedTextField(
             value = selectedDate?.let { convertMillisToDate(it) } ?: "",
@@ -187,10 +186,10 @@ fun ScreenContent(modifier: Modifier = Modifier){
                     awaitEachGesture {  }
                 }
         )
-        if (showModal){
+        if (isShowModal){
             DatePickerModal(
                 onDateSelected = { selectedDate = it },
-                onDismiss =  { showModal = false }
+                onDismiss =  { isShowModal = false }
             )
         }
 
@@ -218,31 +217,30 @@ fun ScreenContent(modifier: Modifier = Modifier){
         Button(
             onClick = {
                 beratError = (berat == ""|| berat == "0")
-                tinggiError = (tinggi == "" || tinggi == "0")
-                if (beratError || tinggiError) return@Button
+                airError = (air == "" || air == "0")
+                if (beratError || airError) return@Button
 
-                bmi = hitungBmi(berat.toFloat(), tinggi.toFloat())
-                kategori = getKategori(bmi, gender == radioOptions[0])
+                ka = hitung(
+                    berat.toFloat(),
+                    air.toFloat(),
+                    gender == radioOptions[0]
+                )
+                kategori = getKategori(ka)
             },
             modifier = Modifier.padding(top = 8.dp),
             contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
         ) {
             Text(text = stringResource(R.string.hitung))
         }
-        if (bmi != 0f) {
+        if (ka != 0f) {
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp),
                 thickness = 1.dp
             )
             Text(
-                text = stringResource(R.string.bmi_x, bmi),
+                text = stringResource(R.string.ka_x, ka),
                 style = MaterialTheme.typography.headlineLarge
             )
-            Text(
-                text = stringResource(R.string.tanggal),
-                style = MaterialTheme.typography.headlineLarge
-            )
-
             Text(
                 text = stringResource(kategori).uppercase(),
                 style = MaterialTheme.typography.headlineLarge
@@ -253,7 +251,7 @@ fun ScreenContent(modifier: Modifier = Modifier){
                     shareData(
                         context = context,
                         message = context.getString(R.string.bagikan_template,
-                            berat,tinggi,gender,bmi,context.getString(kategori).uppercase())
+                            berat,air,gender,ka,context.getString(kategori).uppercase())
                     )
                 },
                 modifier = Modifier.padding(top = 8.dp),
@@ -301,25 +299,23 @@ fun ErrorHint(isError: Boolean) {
     }
 }
 
-private fun hitungBmi(berat: Float, tinggi: Float): Float {
-    return berat / (tinggi / 100).pow(2)
+private fun hitung(berat: Float, konsumsiAir: Float, isMale: Boolean): Float {
+    val kebutuhan = if (isMale) {
+        (berat / 10f) * 1.0f
+    } else {
+        (berat / 10f) * 0.85f
+    }
+    return konsumsiAir / kebutuhan
 }
 
-private fun  getKategori(bmi: Float, isMale: Boolean): Int {
-    return if (isMale) {
-        when {
-            bmi < 20.5 -> R.string.kurus
-            bmi >= 27.0 -> R.string.gemuk
-            else -> R.string.ideal
-        }
-    } else {
-        when {
-            bmi < 18.5 -> R.string.kurus
-            bmi >= 25.0 -> R.string.gemuk
-            else -> R.string.ideal
-        }
+private fun getKategori(rasio: Float): Int {
+    return when {
+        rasio < 0.9 -> R.string.kekurangan_air
+        rasio > 1.1 -> R.string.kelebihan_air
+        else -> R.string.cukup_air
     }
 }
+
 
 private fun shareData(context: Context, message: String) {
     val shareIntent = Intent(Intent.ACTION_SEND).apply {
